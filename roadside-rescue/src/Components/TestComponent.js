@@ -7,7 +7,9 @@ import {
   actionAddTodo,
   actionRemoveTodo,
 } from "./../Services/actions/TodoAction";
+import { useNavigate } from "react-router-dom";
 function TestComponent() {
+  const navigate = useNavigate();
   const [todo, setTodo] = useState();
   const Todo = useSelector((state) => state.todoRed.todos);
   // const {todos} = Todo; // no need cuz we got that .
@@ -21,9 +23,12 @@ function TestComponent() {
   const handelRemove = (t) => {
     dispatch(actionRemoveTodo(t));
   };
-
+  const handleLogout = () => {
+    navigate("/");
+  };
   return (
     <div className="App">
+      <button onClick={handleLogout}>Logout</button>
       <header className="App-header">
         <h2>Todo List App in Redux</h2>
         <form onSubmit={handleSubmit}>

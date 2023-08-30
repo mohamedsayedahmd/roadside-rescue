@@ -15,6 +15,16 @@ export const loginReducer = (state = intalValue, action) => {
         ...state,
         password: action.payload,
       };
+    case "CLEAR_EAMIL":
+      return {
+        ...state,
+        email: action.payload,
+      };
+    case "CLEAR_PASSWORD":
+      return {
+        ...state,
+        password: action.payload,
+      };
     default:
       return state;
   }
