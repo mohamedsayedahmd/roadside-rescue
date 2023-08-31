@@ -59,7 +59,7 @@ public class UserController {
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<String> deleteUser(@PathVariable String id) {
         try{
-            String result = userService.deleteUser(id); // Use the provided ID
+            String result = userService.deleteUserById(id); // Use the provided ID
             return ResponseEntity.ok(result);
         }
         catch (Exception e){
@@ -70,4 +70,10 @@ public class UserController {
         }
     }
 
+    // Find User By ID
+    @PostMapping("/find")
+    public ResponseEntity<User> getUserByEmail(@RequestBody String email){
+        User userById = userService.findUserByEmail(email);
+        return new ResponseEntity<>(userById,HttpStatus.OK);
+    }
 }

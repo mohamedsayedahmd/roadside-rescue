@@ -2,13 +2,18 @@ package com.roadside.backend.service;
 
 import com.roadside.backend.model.User;
 import com.roadside.backend.repository.UserRepo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
 public class UserService {
+    private final Logger LOGGER = LoggerFactory.getLogger(UserService.class); // Create a logger
+
     private final UserRepo userRepo;
 
     @Autowired
@@ -46,26 +51,37 @@ public class UserService {
             if (user != null) {
                 // Perform additional authentication logic (compare passwords, etc.)
                 if (user.getPassword().equals(password)) {
+                    LOGGER.warn("User: <" + username + "> successfully authenticated.");
                     return true;
                 }
             }
             return false;
         } catch (Exception e) {
-            // Handle the exception appropriately (log it, throw custom exception, etc.)
-            System.err.println("Error during user authentication: " + e.getMessage());
+            // Use the logger to log the error
+            LOGGER.error("Error during user authentication: " + e.getMessage(), e);
             return false; // Indicate authentication failure due to exception
         }
     }
 
     // Delete user
-    public String deleteUser(String id) {
+    public String deleteUserById(String id) {
         try {
             userRepo.deleteById(id);
+            LOGGER.warn("User with ID " + id + " was deleted successfully.");
             return "User with ID " + id + " was deleted successfully";
         }
         catch (Exception e){
-            // Handle the exception and throw it to the calling method
+            // Use the logger to log the error and throw it to the calling method
+            LOGGER.error("Error while deleting user with ID: ", id,e);
             throw new RuntimeException("Error while deleting user", e);
         }
+    }
+
+    // Get user by Email
+    public User findUserByEmail(String email){
+        User user = Optional.ofNullable(userRepo.findByEmail(email))
+                .orElseThrow(() -> new RuntimeException("User not found."));
+        LOGGER.info(String.format("Email Founded: %s",email));
+        return user;
     }
 }
