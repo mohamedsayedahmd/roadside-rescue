@@ -13,13 +13,17 @@ public class UserService {
     public UserService(UserRepo userRepo) {
         this.userRepo = userRepo;
     }
+    // Method to create new user
     public void createNewUser(User user){
+        // Check if a user with the same email already exist
         if(userRepo.findByEmail(user.getEmail())==null){
+            // Create new user instance
             User newUser = new User();
             newUser.setId(String.valueOf(UUID.randomUUID()));
             newUser.setUsername(user.getUsername());
             newUser.setEmail(user.getEmail());
             newUser.setPassword(user.getPassword());
+            // Save the new user to the repository
             userRepo.save(newUser);
             System.out.println("User saved successfully");
         }

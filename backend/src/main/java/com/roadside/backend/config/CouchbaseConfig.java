@@ -18,7 +18,7 @@ import java.util.Collections;
 public class CouchbaseConfig extends AbstractCouchbaseConfiguration {
     @Autowired
     private ApplicationContext context;
-    // Get all of these fields from the YAML
+    // Get configuration values from YAML properties
     @Value("${app.couchbase.connection-string}")
     private String connectionString;
     @Value("${app.couchbase.user-name}")
@@ -27,7 +27,7 @@ public class CouchbaseConfig extends AbstractCouchbaseConfiguration {
     private String password;
     @Value("${app.couchbase.bucket-user}")
     private String bucketUser;
-
+    // Override methods to provide Couchbase connection details
     @Override
     public String getConnectionString() {
         return connectionString;
@@ -44,17 +44,18 @@ public class CouchbaseConfig extends AbstractCouchbaseConfiguration {
     public String getBucketName() {
         return bucketUser;
     }
-
+    // Configure repository operations mapping
     @Override
     public void configureRepositoryOperationsMapping(RepositoryOperationsMapping mapping) {
         try {
+            // Map the User entity to the appropriate CouchbaseTemplate
             mapping.mapEntity(User.class, getCouchbaseTemplate(bucketUser));
-//            mapping.mapEntity(User.class,getCouchbaseTemplate("NewBUCKET"));
+            // You can map other entities in a similar manner if needed
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
-
+    // Create and return a CouchbaseTemplate for the specified bucketName
     @SneakyThrows
     private CouchbaseTemplate getCouchbaseTemplate(String bucketName) throws Exception {
         CouchbaseTemplate template = new CouchbaseTemplate(couchbaseClientFactory(bucketName),
@@ -63,7 +64,7 @@ public class CouchbaseConfig extends AbstractCouchbaseConfiguration {
         template.setApplicationContext(context);
         return template;
     }
-
+    // Create and return a CouchbaseClientFactory for the specified bucketName
     private CouchbaseClientFactory couchbaseClientFactory(String bucketName) {
         return new SimpleCouchbaseClientFactory(couchbaseCluster(couchbaseClusterEnvironment()), bucketName, this.getScopeName());
     }

@@ -5,6 +5,7 @@ import org.springframework.data.couchbase.repository.CouchbaseRepository;
 import org.springframework.data.couchbase.repository.Query;
 
 public interface UserRepo extends CouchbaseRepository<User, String> {
+    // Custom query method to find a user by their email
     @Query("#{#n1ql.selectEntity} WHERE email = $1")
     User findByEmail(String email);
 

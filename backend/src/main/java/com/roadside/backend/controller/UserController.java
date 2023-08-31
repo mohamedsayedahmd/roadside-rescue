@@ -10,10 +10,12 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 
     private UserService userService;
+    // Constructor-based dependency injection
     @Autowired
     public UserController(UserService userService) {
         this.userService = userService;
     }
+    // Endpoint to register a new user via a POST request
     @PostMapping("/register")
     public void findAll(@RequestBody User user){
         userService.createNewUser(user);
