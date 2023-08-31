@@ -3,16 +3,13 @@ package com.roadside.backend.service;
 import com.roadside.backend.model.User;
 import com.roadside.backend.repository.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.UUID;
 
 @Service
 public class UserService {
-    private UserRepo userRepo;
+    private final UserRepo userRepo;
 
     @Autowired
     public UserService(UserRepo userRepo) {
@@ -60,6 +57,7 @@ public class UserService {
         }
     }
 
+    // Delete user
     public String deleteUser(String id) {
         try {
             userRepo.deleteById(id);
