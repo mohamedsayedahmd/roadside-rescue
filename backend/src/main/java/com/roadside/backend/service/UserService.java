@@ -1,5 +1,6 @@
 package com.roadside.backend.service;
 
+import com.roadside.backend.exception.NotFoundException;
 import com.roadside.backend.model.User;
 import com.roadside.backend.repository.UserRepo;
 import org.slf4j.Logger;
@@ -70,7 +71,7 @@ public class UserService {
             LOGGER.warn("User with ID " + id + " was deleted successfully.");
             return "User with ID " + id + " was deleted successfully";
         }
-        catch (Exception e){
+        catch (Exception e) {
             // Use the logger to log the error and throw it to the calling method
             LOGGER.error("Error while deleting user with ID: ", id,e);
             throw new RuntimeException("Error while deleting user", e);
@@ -80,7 +81,7 @@ public class UserService {
     // Get user by Email
     public User findUserByEmail(String email){
         User user = Optional.ofNullable(userRepo.findByEmail(email))
-                .orElseThrow(() -> new RuntimeException("User not found."));
+                .orElseThrow(() -> new NotFoundException("User not found."));
         LOGGER.info(String.format("Email Founded: %s",email));
         return user;
     }
