@@ -1,5 +1,6 @@
 package com.roadside.backend.controller;
 
+import com.roadside.backend.exception.NotFoundException;
 import com.roadside.backend.model.Login;
 import com.roadside.backend.model.User;
 import com.roadside.backend.service.UserService;
@@ -58,22 +59,30 @@ public class UserController {
     // Delete User By ID
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<String> deleteUser(@PathVariable String id) {
-        try{
+        try {
             String result = userService.deleteUserById(id); // Use the provided ID
             return ResponseEntity.ok(result);
-        }
-        catch (Exception e){
-            // Handle the exception and return an error response
-            System.err.println("Error while deleting user: " + e.getMessage());
+        } catch (NotFoundException e) {
+            // Handle NotFoundException, which indicates the user was not found
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("[Del] " + e.getMessage());
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to delete user");
-
         }
     }
 
     // Find User By ID
     @PostMapping("/find")
-    public ResponseEntity<User> getUserByEmail(@RequestBody String email){
-        User userById = userService.findUserByEmail(email);
-        return new ResponseEntity<>(userById,HttpStatus.OK);
+    public ResponseEntity<?> getUserByEmail(@RequestBody String email) {
+        // Validate the email input
+        if (email == null || email.isEmpty()) {
+            return ResponseEntity.badRequest().body("Email is required.");
+        }
+        try {
+            User userById = userService.findUserByEmail(email);
+            return new ResponseEntity<>(userById, HttpStatus.OK);
+        }
+        catch (NotFoundException e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
     }
 }

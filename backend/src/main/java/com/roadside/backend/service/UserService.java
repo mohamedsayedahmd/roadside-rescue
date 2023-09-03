@@ -64,25 +64,25 @@ public class UserService {
         }
     }
 
-    // Delete user
+    // Delete user by id
     public String deleteUserById(String id) {
-        try {
+        Optional<User> optionalUser = userRepo.findById(id);
+        if (optionalUser.isPresent()) {
             userRepo.deleteById(id);
             LOGGER.warn("User with ID " + id + " was deleted successfully.");
             return "User with ID " + id + " was deleted successfully";
-        }
-        catch (Exception e) {
-            // Use the logger to log the error and throw it to the calling method
-            LOGGER.error("Error while deleting user with ID: ", id,e);
-            throw new RuntimeException("Error while deleting user", e);
+        } else {
+            LOGGER.error("User with ID " + id + " not found.");
+            throw new NotFoundException("User with ID " + id + " not found.");
         }
     }
 
     // Get user by Email
-    public User findUserByEmail(String email){
+    public User findUserByEmail(String email) {
         User user = Optional.ofNullable(userRepo.findByEmail(email))
-                .orElseThrow(() -> new NotFoundException("User not found."));
-        LOGGER.info(String.format("Email Founded: %s",email));
+                .orElseThrow(() -> new NotFoundException("User not found " + email));
+        // Log the email only if a user is found
+        LOGGER.info("Email Found: {}", email);
         return user;
     }
 }
