@@ -24,16 +24,24 @@ public class UserService {
 
     // Method to create new user
     public String createNewUser(User user) {
+        // Check if any of the user's fields are missing or empty
+        if (user == null || user.getUsername() == null || user.getEmail() == null || user.getPassword() == null ||
+                user.getUsername().isEmpty() || user.getEmail().isEmpty() || user.getPassword().isEmpty()) {
+            return "Please provide all required fields (username, email, password).";
+        }
         // Check if a user with the same email already exist
         if (userRepo.findByEmail(user.getEmail()) == null) {
+
             // Create new user instance
             User newUser = new User();
             newUser.setId(String.valueOf(UUID.randomUUID()));
             newUser.setUsername(user.getUsername());
             newUser.setEmail(user.getEmail());
             newUser.setPassword(user.getPassword());
+
             // Save the new user to the repository
             userRepo.save(newUser);
+            LOGGER.info("The user {} has been created successfully ",newUser.getUsername());
             return "User saved successfully";
         } else {
             return "Email Already exist !";
@@ -80,7 +88,10 @@ public class UserService {
     // Get user by Email
     public User findUserByEmail(String email) {
         User user = Optional.ofNullable(userRepo.findByEmail(email))
-                .orElseThrow(() -> new NotFoundException("User not found " + email));
+                .orElseThrow(() -> {
+                    LOGGER.error("User with email " + email + " not found.");
+                    throw new NotFoundException("User not found " + email);
+                });
         // Log the email only if a user is found
         LOGGER.info("Email Found: {}", email);
         return user;

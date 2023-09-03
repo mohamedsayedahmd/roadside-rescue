@@ -24,14 +24,8 @@ public class UserController {
     // Endpoint to register a new user via a POST request
     @PostMapping
     public ResponseEntity<String> register(@RequestBody User user) {
-        try {
-            String result = userService.createNewUser(user);
-            return ResponseEntity.ok(result);
-        } catch (Exception e) {
-            // Handle the exception and return an error response
-            System.out.println("Oops, something went wrong: " + e.getMessage());
-            return ResponseEntity.status(HttpStatus.ACCEPTED.INTERNAL_SERVER_ERROR).body("Registration failed");
-        }
+        String result = userService.createNewUser(user);
+        return ResponseEntity.ok(result);
     }
 
     // Endpoint for user login via a POST request
@@ -59,15 +53,8 @@ public class UserController {
     // Delete User By ID
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<String> deleteUser(@PathVariable String id) {
-        try {
-            String result = userService.deleteUserById(id); // Use the provided ID
-            return ResponseEntity.ok(result);
-        } catch (NotFoundException e) {
-            // Handle NotFoundException, which indicates the user was not found
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("[Del] " + e.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to delete user");
-        }
+        String result = userService.deleteUserById(id); // Use the provided ID
+        return ResponseEntity.ok(result);
     }
 
     // Find User By ID
@@ -77,12 +64,7 @@ public class UserController {
         if (email == null || email.isEmpty()) {
             return ResponseEntity.badRequest().body("Email is required.");
         }
-        try {
-            User userById = userService.findUserByEmail(email);
-            return new ResponseEntity<>(userById, HttpStatus.OK);
-        }
-        catch (NotFoundException e){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
+        User userById = userService.findUserByEmail(email);
+        return new ResponseEntity<>(userById, HttpStatus.OK);
     }
 }
