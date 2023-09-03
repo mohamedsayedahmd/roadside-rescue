@@ -33,7 +33,7 @@ ___
 ```
 ___
 ### Return All Users Request
-#### [ GET ] : http://localhost:8083/api/v1/user/getAllUsers
+#### [ GET ] : http://localhost:8083/api/v1/user/get-all-users
 ___
 ### Delete User By ID Request
 #### [ DEL ] : http://localhost:8083/api/v1/user/delete/f4ee1186-e240-4d10-9d74-b4a5d537a5ed
